@@ -1,76 +1,110 @@
 # mnist-model-comparison-cnn-resnet-filters
 A comprehensive comparison of deep learning models on MNIST, evaluating a Basic CNN, a ResNet-like architecture, and a CNN trained on manually filtered images (Sobel, Laplacian, Blur, Sharpen, Custom kernels). Includes accuracy benchmarking, confusion matrices, and grouped bar-chart visualizations
+# Performance Comparison: CNN vs ResNet vs Filtered Images (MNIST)
 
-This project explores different deep learning and classical image-processing approaches for handwritten digit classification using the MNIST dataset.  
-The goal was to compare the performance of:
+This project explores how different feature extraction techniques affect image classification performance on the **MNIST handwritten digits dataset**.  
+It compares:
 
-1. **A baseline Convolutional Neural Network (CNN)**
-2. **A custom ResNet-like architecture**
-3. **The CNN evaluated on MNIST images transformed using classical filters**
-   - Sobel (vertical/horizontal edges)
-   - Laplacian
-   - Gaussian blur
-   - Sharpening kernel
-   - Walsh-like diagonal filter
-   - Box blur
+- **A Basic CNN model**
+- **A ResNet-like model built from custom residual blocks**
+- **Classical handcrafted image filters** (Sobel, Laplacian, Gaussian Blur, Sharpen, etc.)
+
+The goal is to analyze how modern deep learning models perform relative to traditional image preprocessing methods, and how each technique impacts accuracy.
 
 ---
 
-## 📊 Model Architectures
+## 📌 Project Overview
+
+This project performs a detailed comparison between three different approaches:
 
 ### **1️⃣ Basic CNN**
-- 2 convolution blocks  
-- MaxPooling + ReLU  
-- Dense classifier  
-- ~0.985 accuracy  
+A sequential Convolutional Neural Network consisting of:
+- Conv2D + BatchNorm + ReLU
+- MaxPooling + Dropout
+- Dense layers  
+This acts as the baseline.
 
 ### **2️⃣ ResNet-like Model**
-- Residual skip connections  
-- Batch Normalization  
-- Deeper feature extraction  
-- ~0.993–0.995 accuracy (best performance)  
+A custom-built residual neural network:
+- Uses manually implemented **residual blocks**
+- Skip connections improve gradient flow
+- Faster convergence than the CNN
 
-### **3️⃣ Filtered Images + CNN**
-Each MNIST test image was pre-processed using classical 3×3 kernels.  
-These filtered images were fed into the trained CNN to measure robustness.
+### **3️⃣ Classical Image Filters**
+Before classification, test images are transformed using 7 handcrafted kernels:
 
----
+| Filter Name | Description |
+|------------|-------------|
+| Sharpen | Highlights edges and intensifies structure |
+| Blur | Smoothens the image |
+| Vertical Edge | Sobel operator (vertical) |
+| Horizontal Edge | Sobel operator (horizontal) |
+| Gaussian Blur | Smooths noise with weighted blur |
+| Laplacian | Second-order derivative edge detection |
+| Walsh-like | Diagonal contrast-sensitive pattern |
 
-## 🧪 Results Summary
-
-| Model / Processing Method | Accuracy |
-|--------------------------|----------|
-| **Basic CNN** | ~0.985 |
-| **ResNet-like Model** | **0.993–0.995** |
-| **CNN on Sharpened Images** | ~0.95 |
-| **CNN on Sobel Vertical** | ~0.94 |
-| **CNN on Sobel Horizontal** | ~0.93 |
-| **CNN on Gaussian Blur** | ~0.92 |
-| **CNN on Box Blur** | ~0.91 |
-| **CNN on Laplacian Filter** | ~0.87 |
+Each filtered dataset is evaluated using the **trained CNN**.
 
 ---
 
-## 🎨 Visual Comparison
+## 📊 Results Summary
 
-A side-by-side grouped bar chart was generated to compare:
+### **Model Accuracies**
+| Model | Test Accuracy |
+|-------|----------------|
+| **Basic CNN** | ~0.99 |
+| **ResNet-like Model** | ~0.99+ |
+| **Filtered Images (Average)** | ~0.80–0.92 depending on filter |
 
-- Baseline CNN  
-- ResNet-like model  
-- All filtered-image accuracies  
-
-This visualization clearly shows the performance degradation caused by blur and Laplacian filters, while edge-detection filters preserve reasonable classification performance.
+ResNet shows **faster convergence and slightly better accuracy**, while filters show significant variation depending on their feature extraction capability.
 
 ---
 
-## 📝 Key Insights
+## 📈 Visualizations
 
-- **ResNet-like architecture is the most accurate**, thanks to skip connections that allow deeper learning without vanishing gradients.
-- **Classical filters significantly affect accuracy**:
-  - Edge-detection filters keep digit structure → moderate accuracy.
-  - Blurring reduces key features → noticeable accuracy drop.
-  - Laplacian introduces noise → lowest performance.
-- **Deep networks are sensitive to input transformations**, demonstrating the importance of robust preprocessing in real-world applications.
+### ✔️ Accuracy vs Epochs (CNN vs ResNet)
+Shows how quickly both models converge.
+
+### ✔️ Loss vs Epochs (CNN vs ResNet)
+ResNet stabilizes faster due to skip connections.
+
+### ✔️ Bar Chart: CNN vs ResNet vs All Filters
+Displays per-filter performance compared to learned models.
+
+All plots are generated using Matplotlib.
+
+---
+
+## 📦 Technologies Used
+
+- **TensorFlow / Keras**
+- **NumPy**
+- **Matplotlib**
+- **SciPy (convolution2d)**
+- **MNIST Dataset**
+
+---
+
+## 🧠 How Residual Blocks Help
+
+Residual connections allow:
+
+- Better gradient flow  
+- Reduced vanishing gradient problem  
+- Faster convergence  
+- Better generalization  
+
+This is why even a small ResNet-like model outperforms the basic CNN.
+
+---
+
+## 🧪 Filters Used in This Project
+
+Each filter is applied to the MNIST test set using 2D convolution:
+
+```python
+convolve2d(image, kernel, mode="same", boundary="fill")
+
 
 ---
 
